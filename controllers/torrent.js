@@ -17,6 +17,10 @@
 		   *
 		   */
 		show: function (req, res, next) {
+			if (engine) {
+				engine.destroy();
+			}
+
 			res.render('index.twig');
 		},
 
