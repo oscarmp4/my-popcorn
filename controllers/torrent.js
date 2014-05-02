@@ -4,7 +4,7 @@
 
 	var torrentStream = require('torrent-stream');
 	var fs = require('fs');
-
+	var engine;
 	
 	
 
@@ -50,12 +50,16 @@
 				return res.redirect('/');
 			}
 
-	    	var engine = torrentStream(req.session.torrent);
+			if (engine) {
+				engine.destroy();
+			}
+
+	    	engine = torrentStream(req.session.torrent);
 
 			engine.on('ready', function() {
 				var file = engine.files[0];
 	
-		    	console.log(file);
+		    	// console.log(file);
 		        console.log('filename:', file.name);
 
 		  		var total = file.length;
@@ -81,7 +85,21 @@
 						'Content-Length': chunksize, 
 						'Content-Type': type
 					});
+
+					// stream.on('close', function() {
+					// 	console.log('close');
+					// });
+					// stream.on('end', function() {
+					// 	console.log('end');
+					// 	engine.destroy();
+					// });
+
+					// stream.on('unpipe', function() {
+					// 	console.log('unpipe');
+					// });
+
 					stream.pipe(res);
+					
 				} else {
 					var stream = file.createReadStream();
 
@@ -90,8 +108,15 @@
 						'Content-Length': total, 
 						'Content-Type': type 
 					});
+					
 					stream.pipe(res);
 				}
+
+				
+
+				
+				
+
 			});
 
 		}
