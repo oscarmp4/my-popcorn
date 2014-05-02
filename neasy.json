@@ -1,0 +1,12 @@
+{
+  "cookie": {
+    "secret": "b6aa87db877e7b7dae329496146711a677ae3bd2"
+  },
+  "server": {
+    "domain": "localhost",
+    "port": 5000
+  },
+  "database": {
+    "name": "my-popcorn"
+  }
+}
