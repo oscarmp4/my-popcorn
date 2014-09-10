@@ -5,8 +5,8 @@
 	var torrentStream = require('torrent-stream');
 	var fs = require('fs');
 	var engine;
-	
-	
+
+
 
 	module.exports = {
 
@@ -33,7 +33,7 @@
 		   */
 		view: function (req, res, next) {
 			if (req.session.torrent) {
-				res.render('video.twig');	
+				res.render('video.twig');
 			} else {
 				res.render('index.twig');
 			}
@@ -62,13 +62,13 @@
 
 			engine.on('ready', function() {
 				var file = engine.files[0];
-	
+
 		    	// console.log(file);
 		        console.log('filename:', file.name);
 
 		  		var total = file.length;
 		  		var type = 'video/mp4';
-		       
+
 				if (req.headers['range']) {
 					var range = req.headers.range;
 					var parts = range.replace(/bytes=/, "").split("-");
@@ -82,11 +82,11 @@
 
 					// var file = fs.createReadStream(path, );
 					var stream = file.createReadStream({start: start, end: end});
-		        
-					res.writeHead(206, { 
-						'Content-Range': 'bytes ' + start + '-' + end + '/' + total, 
-						'Accept-Ranges': 'bytes', 
-						'Content-Length': chunksize, 
+
+					res.writeHead(206, {
+						'Content-Range': 'bytes ' + start + '-' + end + '/' + total,
+						'Accept-Ranges': 'bytes',
+						'Content-Length': chunksize,
 						'Content-Type': type
 					});
 
@@ -103,23 +103,23 @@
 					// });
 
 					stream.pipe(res);
-					
+
 				} else {
 					var stream = file.createReadStream();
 
 					console.log('ALL: ' + total);
 					res.writeHead(200, {
-						'Content-Length': total, 
-						'Content-Type': type 
+						'Content-Length': total,
+						'Content-Type': type
 					});
-					
+
 					stream.pipe(res);
 				}
 
-				
 
-				
-				
+
+
+
 
 			});
 
