@@ -42,8 +42,11 @@
 
 
 		set: function (req, res, next) {
-			if (req.files.file) {
-				post = req.files.file;
+			if (req.body.magnet) {
+				post = req.body.magnet;
+				return res.redirect('/view');
+			} else if (req.files && req.files.file) {
+				post = fs.readFileSync(req.files.file.path);
 			}
 
 			return res.end('');
@@ -58,7 +61,7 @@
 				engine.destroy();
 			}
 
-	    	engine = torrentStream(fs.readFileSync(post.path));
+	    	engine = torrentStream(post);
 
 			engine.on('ready', function() {
 				var file = engine.files[0];
