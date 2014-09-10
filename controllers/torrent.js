@@ -5,6 +5,7 @@
 	var torrentStream = require('torrent-stream');
 	var fs = require('fs');
 	var engine;
+	var post;
 
 
 
@@ -32,7 +33,7 @@
 		   *
 		   */
 		view: function (req, res, next) {
-			if (req.session.torrent) {
+			if (post) {
 				res.render('video.twig');
 			} else {
 				res.render('index.twig');
@@ -41,16 +42,15 @@
 
 
 		set: function (req, res, next) {
-			if (req.body.torrent) {
-				req.session.torrent = req.body.torrent;
+			if (req.files.file) {
+				post = req.files.file;
 			}
 
-			res.redirect('/view');
+			return res.end('');
 		},
 
 		stream: function (req, res, next) {
-			// console.log(req.session);
-			if (req.session.torrent == undefined) {
+			if (post == undefined) {
 				return res.redirect('/');
 			}
 
@@ -58,7 +58,7 @@
 				engine.destroy();
 			}
 
-	    	engine = torrentStream(req.session.torrent);
+	    	engine = torrentStream(fs.readFileSync(post.path));
 
 			engine.on('ready', function() {
 				var file = engine.files[0];
